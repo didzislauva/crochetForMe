@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+		<style type='text/css'>
+			body{
+			    font-family:verdana;
+			}
+			
+			
+			#dialog-modal{
+				
+				display:none;
+			}
+			#miskaste{
+				
+				margin-left:20px;
+				margin-bottom:20px;
+			}
+			
+			.miskaste{
+				border-top:thin dotted 	#aaa;
+				border-right:thin dotted #aaa;
+				display: block;
+				width: 90px;
+                                height: 100px;
+				background:url(img/trash.png) no-repeat 0px 0px;
+				cursor: arrow;
+			    
+			    /* img src="img/trash.png" width="10%" id="miskasteImg"/ */
+			    
+		       }
+		       
+		       .miskaste:hover{
+			 background:url(img/trash.png) no-repeat 0px -100px;
+			 cursor: default;
+		       }
+		       
+		       img.startImgs{
+			    border-style:solid;
+			    border-color:#ccc #aaa;
+			    border-width: 1px;
+			    opacity: 0.1;
+			    
+			}
+			img.startImgs:hover{
+			opacity: 1;
+			}
+			
+			div.rotaPreview{
+			    width: 500px;
+			    float:left; /* add this */
+			}
+			
+			div.rotaCntr{
+				box-shadow: 6px 6px 5px #cccccc;
+				border: thin solid #cccccc;
+				width: 820px;
+				margin-left: auto ;
+				margin-right: auto ;
+				
+			}
+			
+			div.rotaCreate{
+			    overflow-y: scroll; 
+			    height:825px;
+			    border-left:  thin dashed #cccccc;
+			  
+			}
+			
+			
+			.rotaCreateHeader {
+				background-color:#ffffaa;
+				display:block;
+				margin:auto;
+				
+				
+				
+				
+				
+			}
+			
+			.rotaCreateHeader p{
+				 margin:10px;
+				 font-family:verdana;
+				 font-size:10pt;
+				 text-align:center;
+				 
+			}
+			
+			.rotaPartsImg{
+				padding-top:1px;
+			}
+			
+			
+			.saveBtn{
+				text-align:center;
+				width: 500px;
+				background-color:#ffffcc;
+				padding-top: 10px;
+				padding-bottom: 5px;
+			}	
+                    
+			/*  --------------------------pop up formas css ------------*/
+			label, input {
+				display:block;
+				}
+			input.text {
+				margin-bottom:12px;
+				width:95%;
+				padding: .4em;
+				font-size:8pt;
+				}
+			
+			fieldset {
+				padding:0;
+				border:0;
+				margin-top:25px;
+				}
+			h1 {
+				font-size: 0,8em;
+				margin: .6em 0;
+				}
+			div#users-contain {
+				width: 350px;
+				margin: 20px 0;
+				}
+			div#users-contain table {
+				margin: 1em 0;
+				border-collapse:
+				collapse; width: 100%;
+				}
+			div#users-contain table td, div#users-contain table th {
+				border: 1px solid #eee; 
+				padding: .6em 10px;
+				text-align:
+				left; }
+			.ui-dialog .ui-state-error {
+				padding: .3em;
+				}
+			.validateTips {
+				border: 1px solid transparent;
+				padding: 0.3em;
+				}
+			/*  --------------------------pop up formas css ------------*/
+                </style>
+                
+                <script src="http://code.jquery.com/jquery-latest.js"></script>
+                <script type="text/javascript" src="lib/jquery-ui-1.9.2.custom.js"></script>
+		
+		
+                
+		<script type='text/javascript'>
+                    
+			var tips;
+			var activeBallCount=0;
+			
+			var strings="";
+			
+			
+			
+		     
+			    
+			
+                    $(document).ready(function() {
+				
+                                var name = $("#name");
+				var email = $("#email");
+				var password = $( "#password" );
+				var tips = $( ".validateTips" );
+				
+				function updateTips( t ) {
+					tips
+					    .text( t )
+					    .addClass( "ui-state-highlight" );
+					setTimeout(function() {
+					    tips.removeClass( "ui-state-highlight", 1500 );
+					}, 500 );
+				    }
+			    
+				function checkLength( o, n, min, max ) {
+				    
+				    if ( o.val().length > max || o.val().length < min ) {
+					o.addClass( "ui-state-error" );
+					updateTips( "Length of " + n + " must be between " +
+					    min + " and " + max + "." );
+					return false;
+				    } else {
+					return true;
+				    }
+				}
+			 
+				function checkRegexp( o, regexp, n ) {
+				    if ( !( regexp.test( o.val() ) ) ) {
+					o.addClass( "ui-state-error" );
+					updateTips( n );
+					return false;
+				    } else {
+					return true;
+				    }
+				}
+				
+                                $('.drg').draggable({
+					helper:"clone",
+					drag: function(){
+						
+						}
+					
+					
+				});
+                                
+                                
+				
+                               $("#miskaste").droppable({
+					drop: function(event, ui) {
+					    $(ui.draggable).remove();
+					    activeBallCount=activeBallCount-1;
+					},
+					accept: '.item'
+				    });
+            
+            
+                                $("#droppable").droppable({
+					accept: '.drg',
+					
+					
+					drop: function(event, ui) {
+						activeBallCount=activeBallCount+1;
+						$(this).append($(ui.helper).clone());
+						
+						
+						
+						$("#droppable .drg").addClass("item");
+						$(".item").removeClass("ui-draggable drg");
+						$(".item").draggable({
+						    containment: 'parent'
+					    });
+					    
+					}
+					
+					});
+                               
+                        
+				$(".miskaste").click(function(){
+					$(".item").remove();
+				});
+				
+				
+				 $( "#dialog-form" ).dialog({
+					autoOpen: false,
+					height: 300,
+					width: 350,
+					modal: true,
+					buttons: {
+					    "Crocet it for me:": function() {
+						
+						var bValid = true;
+								     
+						bValid = bValid && checkLength( name, "username", 3, 16 );
+						bValid = bValid && checkLength( email, "email", 6, 80 );
+						
+			     
+						bValid = bValid && checkRegexp( name, /^[a-z]([0-9a-z_])+$/i, "Username may consist of a-z, 0-9, underscores, begin with a letter." );
+						// From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+						bValid = bValid && checkRegexp( email, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );
+						
+						if (bValid) {
+							
+							$('.item').each(function(i, obj) {
+								var strings="";
+								stils=$(this).attr("style");
+								stils=stils.split(" ");
+								
+								fname=$(this).attr("src")
+								//5 = top, 3=left
+								strings=strings+fname+","+stils[3]+","+stils[5]+"\n";
+							    });
+	
+							$.ajax({
+								     url:'sendImg.php',
+								     type:'POST',
+								     
+								     data:"htmltext="+strings,
+								     
+								     success: function(data)
+								     {
+									     $(".debug").html(data)
+									     
+								     },
+								     error: function()
+								     {
+									     
+									     $(".debug").text("Impossible to save model")
+								     }
+							});
+							
+							$( this ).dialog( "close" );
+							$(".rotaCntr").fadeOut(200);
+							$(".saveBtn").fadeOut(200);
+							window.location.replace("http://www.etsy.com/listing/58508877/crochet-rainbow-big-bead-necklace");
+						}
+						
+						
+						
+						
+						},
+					    Cancel: function() {
+						$( this ).dialog( "close" );
+					    }
+					},
+					close: function() {
+					    $( this ).dialog( "close" );
+					}
+				    });
+			     
+				   
+				
+				
+				
+				$(".saveBtnImg").click(function () {
+						   
+						   
+						var stils;
+						var name; 
+						$(".debug").html("");
+											
+						if (activeBallCount>0){
+						$( "#dialog-form" ).dialog( "open" );
+						
+						
+						}
+						else {
+							alert("nav bumbiņ` \n tukšīc");
+						}
+						
+						
+						
+				        });
+				      
+				       
+			        });
+                </script>
+               
+                
+        </head>
+        <body>
+           <div class='container'>
+
+                <div class='rotaCntr'>
+                    
+			<div class='rotaPreview' id='droppable'>
+			    <img src='img/lib/saite.png' />
+			
+			    <div id="miskaste">
+				    <span></span>
+				    <a href=# class='miskaste'></a>
+				    
+				<!-- <img src="img/trash.png" width="10%" id="miskasteImg"/> -->
+			    </div>
+			</div>
+		    
+                   
+		    
+			<div class='rotaCreate' id="rotaCreateID">
+			    <center>
+				    
+			    <div class=rotaCreateHeader>
+				    <p>Drag and drop balls.</p>
+			    </div>
+			    
+			    <div class='rotaPartsImg'> 
+			    <img src='img/lib/l_1.png' class="drg"/>
+			    <img src='img/lib/l_2.png' class="drg"/>
+			    <img src='img/lib/l_3.png' class="drg"/>
+			    <img src='img/lib/l_4.png' class="drg"/>
+			    <img src='img/lib/m_1.png' class="drg"/>
+			    <img src='img/lib/m_2.png' class="drg"/>
+			    <img src='img/lib/m_3.png' class="drg"/>
+			    <img src='img/lib/m_4.png' class="drg"/>
+			    <img src='img/lib/l_1.png' class="drg"/>
+			    <img src='img/lib/l_2.png' class="drg"/>
+			    <img src='img/lib/l_3.png' class="drg"/>
+			    <img src='img/lib/l_4.png' class="drg"/>
+			    <img src='img/lib/m_1.png' class="drg"/>
+			    <img src='img/lib/m_2.png' class="drg"/>
+			    <img src='img/lib/m_3.png' class="drg"/>
+			    <img src='img/lib/m_4.png' class="drg"/>
+			    </div> 
+			    </center>
+			    
+			</div>
+                    
+			<div class='saveBtn'>
+				<img src='img/saveBtn.png' class='saveBtnImg'/>
+			</div>
+		    
+		    
+                </div>
+                
+
+</div>
+		
+		<div class='debug'>	
+		</div>
+
+                
+            </div>
+	    
+	    <div id="dialog-form" title="Contact information">
+		<form>
+		<fieldset>
+		   <p class="validateTips">asddsa</p>
+		    <label for="email">email*</label>
+		    <input type="text" name="email" id="email" value="" class="text ui-widget-content ui-corner-all" />
+		     <label for="name">etsy name</label>
+		    <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all" />
+		    fill all 
+		 </fieldset>
+		</form>
+	    </div>
+	    
+        </body>
+</html>
